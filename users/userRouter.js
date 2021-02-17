@@ -24,11 +24,17 @@ router.post('/', validateUser, (req, res) => {
 router.get('/', (req, res) => {
   // do your magic!
   Users.get(req.query)
-    .then(users => {
-      res.status(200).json(users);
+    .then((users) => {
+      if (users) {
+        res.status(200).json(users);
+      } else {
+        res.status(500).json({
+          message: 'Could not find the users',
+        });
+      }
     })
-    .catch(err => {
-      res.status(500).json({ message: 'Could not find the users' });
+    .catch((err) => {
+      next(err);
     });
 });
 
@@ -61,7 +67,7 @@ router.delete('/:id', validateUserId, (req, res) => {
 
 router.put('/:id', validateUserId, validateUser, (req, res) => {
   // do your magic!
-  Users.update(req.params.id, req.body).then(user => {
+  Users.update(req.params.id, req.body).then((user) => {
     res.status(200).json(req.body);
   });
 });
